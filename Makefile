@@ -4,17 +4,18 @@ OBJ =  $(patsubst src/%.c, obj/%.o, $(SRC))
 
 run: clean default
 	./$(TARGET) -f ./mynewdb.db -n 
+	./$(TARGET) -f ./mynewdb.db
 
 
 default: $(TARGET)
 
 clean:
-	rm -f obj/*.o
-	rm -f bin/*
-	rm -f *.db
+	@rm -f obj/*.o
+	@rm -f bin/*
+	@rm -f *.db
 
 $(TARGET): $(OBJ)
-	clang -o $@ $?
+	@clang -o $@ $?
 
 obj/%.o : src/%.c
-	clang -c $< -o $@ -Iinclude
+	@clang -c $< -o $@ -Iinclude

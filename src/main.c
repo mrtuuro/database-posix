@@ -5,7 +5,7 @@
 
 #include "../include/common.h"
 #include "../include/file.h"
-#include "../include/parse.h"*
+#include "../include/parse.h"
 
 void print_usage(char *argv[]) {
     printf("Usage: %s -n -f <database file>\n", argv[0]);
@@ -21,6 +21,7 @@ int main(int argc, char *argv[]) {
     bool newfile = false;
     int c;
     int dbfd = -1;
+    struct dbheader_t *dbhdr = NULL;
 
     while ((c = getopt(argc, argv, "nf:")) != -1 ) {
 
@@ -53,17 +54,26 @@ int main(int argc, char *argv[]) {
             perror("Unable to create database file\n");
             return -1;
         }
+
+        if (create_db_header(dbfd, &dbhdr) == STATUS_ERROR) {
+            printf("Failed to create database dbhdr\n");
+            return -1;
+        }
+
     } else {
         dbfd = open_db_file(filepath);
         if (dbfd == STATUS_ERROR) {
             perror("Unable to open database file\n");
             return -1;
         }
+        if (validate_db_header(dbfd, &dbhdr) == STATUS_ERROR) {
+            printf("Failed to validate database header\n");
+            return -1;
+        }
     }
 
+    output_file(dbfd, dbhdr);
 
-    printf("Newfile: %d\n", newfile);
-    printf("Filepath: %s\n", filepath);
     return 0;
 
 }
