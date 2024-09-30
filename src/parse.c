@@ -8,6 +8,40 @@
 #include <stdlib.h>
 #include "../include/parse.h"
 
+
+int add_employee(struct dbheader_t *dbhdr, struct employee_t *employees, char *addstring) {
+    printf("%s\n", addstring);
+
+
+
+    return STATUS_SUCCESS;
+}
+
+int read_employee(int fd, struct dbheader_t *dbhdr, struct employee_t **employeesOut) {
+    if (fd < 0) {
+        printf("Received a bad FD from the user\n");
+        return STATUS_ERROR;
+    }
+
+    int count = dbhdr->count;
+
+    struct employee_t *employees = calloc(count, sizeof(struct employee_t));
+    if (employees == NULL) {
+        printf("Malloc failed/n");
+        return STATUS_ERROR;
+    }
+
+    read(fd, employees, count*sizeof(struct employee_t));
+
+    int i = 0;
+    for (; i < count; i++) {
+        employees[i].hours = ntohl(employees[i].hours);
+    }
+
+    *employeesOut = employees;
+    return STATUS_SUCCESS;
+}
+
 void output_file(int fd, struct dbheader_t *dbhdr) {
     if (fd < 0) {
         printf("Received a bad FD from the user\n");
@@ -43,12 +77,10 @@ int validate_db_header(int fd, struct dbheader_t **headerOut) {
         return STATUS_ERROR;
     }
 
-
     header->version = ntohs(header->version);
     header->count = ntohs(header->count);
     header->magic = ntohl(header->magic);
     header->filesize = ntohl(header->filesize);
-
 
     if (header->magic != HEADER_MAGIC) {
         printf("Improper header magic\n");
@@ -87,8 +119,5 @@ int create_db_header(int fd, struct dbheader_t **headerOut) {
 
     *headerOut = header;
 
-
     return STATUS_SUCCESS;
-
-
 }
