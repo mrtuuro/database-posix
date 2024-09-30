@@ -4,8 +4,11 @@ OBJ =  $(patsubst src/%.c, obj/%.o, $(SRC))
 
 run: clean default
 	./$(TARGET) -f ./mynewdb.db -n 
-	./$(TARGET) -f ./mynewdb.db -a "Tunc Ozay, Istanbul, 45" 
-
+	./$(TARGET) -f ./mynewdb.db -a "Tunc Ozay, Istanbul, 12"
+	./$(TARGET) -f ./mynewdb.db -a "Ayca Akman, Tekirdag, 20"
+	./$(TARGET) -f ./mynewdb.db -a "Ceto, Istanbul, 55"
+	./$(TARGET) -f ./mynewdb.db -a "Ecem Karan, Kadıkoy, 31"
+	./$(TARGET) -f ./mynewdb.db -a "Test Deneem, Bahcelievler, 221"
 
 
 default: $(TARGET)
